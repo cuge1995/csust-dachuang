@@ -1,0 +1,71 @@
+% =====================================================================
+%  参考文献数据库（BibTeX / UTF-8）
+%  著录标准：GB/T 7714—2015 顺序编码制
+%  样式文件：thuthesis-numeric.bst（取自 csust-thesis-main.zip）
+%  编译链：  xelatex -> bibtex -> xelatex -> xelatex
+%
+%  正文引用：
+%    \cite{key}            显示为 [1]
+%    \cite{key1,key2}      显示为 [1,2]
+%    \nocite{key}          只列入文献表，正文不出现编号
+%  只有被 \cite / \nocite 引用过的条目才会输出。
+%
+%  字段约定：
+%    - 多位作者之间用 " and " 分隔；超过 3 人可写 "xxx and others" 触发「等」
+%    - 中文条目建议写 key = {拼音}，供 BibTeX 按拼音排序（BibTeX 不识别汉字序）
+%    - article 类型       : journal, year, volume, number, pages
+%    - inproceedings 类型 : booktitle, address, publisher, year, pages
+%    - mastersthesis 类型 : school, address, year
+%    - book 类型          : address, publisher, year
+%    - standard 类型      : number, publisher, year
+%    - 中文文献可加 language = {chinese}，样式会自动加「[J]」「[C]」等标识
+%
+%  说明：前两条为与「智能驾驶感知 / 对抗防御」相关的真实文献，供正文示例引用；
+%        后三条为 CSUST 模板自带的中文格式示例（期刊 / 学位论文 / 标准），
+%        默认未引用故不会输出，仅作为著录格式参考。请替换为本项目的实际文献。
+% =====================================================================
+
+@inproceedings{goodfellow2015adversarial,
+  author    = {Goodfellow, Ian J and Shlens, Jonathon and Szegedy, Christian},
+  title     = {Explaining and Harnessing Adversarial Examples},
+  booktitle = {Proceedings of the 3rd International Conference on Learning Representations (ICLR)},
+  address   = {San Diego},
+  year      = {2015},
+}
+
+@inproceedings{szegedy2014intriguing,
+  author    = {Szegedy, Christian and Zaremba, Wojciech and Sutskever, Ilya and others},
+  title     = {Intriguing Properties of Neural Networks},
+  booktitle = {Proceedings of the 2nd International Conference on Learning Representations (ICLR)},
+  address   = {Banff},
+  year      = {2014},
+}
+
+@article{zhangkun1994,
+  author  = {张昆 and 冯立群 and 余昌钰 and others},
+  title   = {机器人柔性手腕的球面齿轮设计研究},
+  journal = {清华大学学报: 自然科学版},
+  volume  = {34},
+  number  = {2},
+  pages   = {1--7},
+  year    = {1994},
+  key     = {zhang1 kun1},
+}
+
+@mastersthesis{zhengkaiqing1987,
+  author  = {郑开青},
+  title   = {通讯系统模拟及软件},
+  address = {北京},
+  school  = {清华大学无线电系},
+  year    = {1987},
+  key     = {zheng4 kai1 qing1},
+}
+
+@standard{gbt77142015,
+  author    = {全国信息与文献标准化技术委员会},
+  title     = {信息与文献 参考文献著录规则: GB/T 7714—2015},
+  address   = {北京},
+  publisher = {中国标准出版社},
+  year      = {2015},
+  key       = {xin1 xi2 yu3 wen2 xian4},
+}

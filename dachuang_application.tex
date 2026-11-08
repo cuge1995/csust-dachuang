@@ -1,0 +1,372 @@
+% !TeX program = xelatex
+% !TeX encoding = UTF-8
+%=====================================================================
+%  大学生创新训练项目计划申请书 —— LaTeX 写作模板
+%  来源：附件2.大学生创新训练项目申请书.doc（长沙理工大学，WPS/Word 97-2003）
+%  转换说明：完整保留原件的栏目名称、章节顺序与表格合并结构；
+%            空白填写处留出可写区域，方便直接用 LaTeX 撰写正文。
+%
+%  编译方式（必须用 XeLaTeX；有参考文献时要跑一次 bibtex）：
+%      xelatex dachuang_application.tex
+%      bibtex  dachuang_application
+%      xelatex dachuang_application.tex
+%      xelatex dachuang_application.tex
+%  或用 latexmk -xelatex dachuang_application.tex（自动处理 bibtex 与多遍编译）
+%
+%  依赖：TeX Live 2021+ / MiKTeX 较新版本，宏包 ctex、fontspec、tabularray、
+%        geometry、fancyhdr、lastpage、xcolor、enumitem、array、natbib、needspace。
+%  随附文件（均取自 csust-thesis-main.zip 长沙理工大学硕士论文 LaTeX 模板）：
+%        thuthesis-numeric.bst —— GB/T 7714-2015 顺序编码制参考文献样式
+%        refs.bib              —— 参考文献库（含格式示例，请替换为本项目文献）
+%
+%  汉字字体：借鉴该论文模板的 fontset 自动检测机制，用 fontset=none 关闭 ctex
+%        默认字体后，按 macOS / Windows / Fandol 三套方案显式配置，并提供
+%        \songti \heiti \fangsong \kaishu 字体族命令。
+%        如需强制指定，改下面 \def\appfontset{auto} 一行即可。
+%  width 统一比版心窄 24pt，用于抵消 tabularray 边框线的测量余量。
+%
+%  写作提示：
+%    1. 表格中的空白单元格直接输入文字即可；短横线字段用 \blank{内容} 填写。
+%    2. 大段文字区（项目简介、立项依据、各类意见）已用 \writingspace 留出空间，
+%       直接在提示语处替换成正文即可，留白高度可自行调整。
+%    3. 写完后把下面 \showhintstrue 改成 \showhintsfalse，即可隐藏所有灰色提示语。
+%    4. 「二、立项依据」还原为原件的整页长框（tcolorbox 可跨页续框），
+%       框内七个栏目与两条子项的名称、顺序均与原件完全一致；
+%       各栏目下方的留白为填写正文预留，写满后可自行删减。
+%    5. 文献条目写在 refs.bib，正文用 \cite{key} 引用（自动编号 [1]）；
+%       文献表由 \bibliography{refs} 输出，位置可按需移动。
+%=====================================================================
+
+\documentclass[UTF8, a4paper, zihao=-4, fontset=none]{ctexart}
+
+\usepackage{geometry}
+\geometry{a4paper, left=2.8cm, right=2.2cm, top=2.4cm, bottom=2.4cm,
+          headheight=0pt, footskip=1.1cm}   % 左侧装订，同原件大16开/A4
+
+\usepackage{fontspec}            % 配合 fontset=none 自行配置 CJK 字体
+\usepackage{tabularray}          % 复杂合并单元格表格
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{url}                 % GB/T 7714 样式需要 \DeclareUrlCommand / \url
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[skins, breakable]{tcolorbox}   % 可跨页长框（还原原件「立项依据」表格）
+\usepackage[numbers, sort]{natbib}    % 参考文献：顺序编码制，[1][2] 编号
+\setcitestyle{numbers, square, comma}
+\bibliographystyle{thuthesis-numeric} % GB/T 7714-2015，取自 csust-thesis 模板
+\providecommand{\bibfont}{}
+\renewcommand{\bibfont}{\zihao{5}\songti}    % 文献表：五号宋体
+
+%---------- 统一框宽 ----------
+% 所有表格、长框、意见栏共用同一宽度，保证左右边线严格对齐。
+% 注意：tabularray 的 width 键会额外叠加列间距/边框开销（列数越多越宽），
+% 所以两张多列表格在下面做了实测补偿；改动列结构后请重新核对右边线。
+\newlength{\appframewidth}
+% 以「一、基本情况」表格的实际宽度为基准（实测 444.5pt = \textwidth-9pt），
+% 使所有表格、长框、意见栏的左右边线严格对齐。
+\setlength{\appframewidth}{\dimexpr\textwidth-9pt\relax}
+
+%---------- 立项依据长框 ----------
+% 原 Word 中「二、立项依据」是一张 1×1 的整页表格（一个大框），框内依次
+% 列出七个栏目名与「已有基础」下的两条子项。这里用可跨页的 tcolorbox 还原：
+% 分页处不画上下横线、左右框线连续，效果等同 Word 表格跨页。
+\newtcolorbox{jibox}{
+  enhanced, breakable,
+  width = \appframewidth,   % 与其余表格同宽、右边线对齐
+  colback = white, colframe = black,
+  boxrule = 0.4pt,                    % 与 tabularray 表格线同粗（0.4pt）
+  arc = 0pt, outer arc = 0pt,         % 直角
+  left = 12pt, right = 12pt, top = 10pt, bottom = 10pt,
+  toprule at break = 0pt, bottomrule at break = 0pt,
+}
+% 框内栏目标题：段落式小标题（不用 \subsection / \needspace，盒内不宜分页）
+\newcommand{\appitem}[1]{%
+  \par\vspace{8pt}%
+  \noindent{\zihao{-4}\heiti #1}\par
+  \vspace{4pt}%
+}
+
+%---------- 汉字字体（借鉴 csust-thesis / thuthesis 的 fontset 机制）----------
+% 用 fontset=none 关闭 ctex 的自动字体，改由下面三套方案显式配置：
+% 好处是 Windows / macOS / Linux 上字体明确一致，也不再有 ctex 旧 fontset
+% 关于 STHeiti 的 Script 警告。把 auto 改成下列之一可强制指定：
+%   windows : SimSun / SimHei / FangSong / KaiTi（中易字体，Windows）
+%   mac     : Songti SC / Heiti SC / STFangsong / Kaiti SC（macOS）
+%   fandol  : TeX Live 自带 Fandol 系列（Linux / 无系统中文时兜底）
+\def\appfontset{auto}             % <<< 改这里即可强制切换字体方案
+\makeatletter
+\newcommand{\app@font@windows}{%
+  \setCJKmainfont{SimSun}[AutoFakeBold = 3]%
+  \setCJKsansfont{SimHei}[AutoFakeBold = 3]%
+  \setCJKmonofont{FangSong}%
+  \setCJKfamilyfont{zhsong}{SimSun}[AutoFakeBold = 3]%
+  \setCJKfamilyfont{zhhei}{SimHei}[AutoFakeBold = 3]%
+  \setCJKfamilyfont{zhfs}{FangSong}%
+  \setCJKfamilyfont{zhkai}{KaiTi}%
+}
+\newcommand{\app@font@mac}{%
+  \setCJKmainfont{Songti SC}[AutoFakeBold = 3]%
+  \setCJKsansfont{Heiti SC}[AutoFakeBold = 3]%
+  \setCJKmonofont{STFangsong}%
+  \setCJKfamilyfont{zhsong}{Songti SC}[AutoFakeBold = 3]%
+  \setCJKfamilyfont{zhhei}{Heiti SC}[AutoFakeBold = 3]%
+  \setCJKfamilyfont{zhfs}{STFangsong}%
+  \setCJKfamilyfont{zhkai}{Kaiti SC}[AutoFakeBold = 3]%
+}
+\newcommand{\app@font@fandol}{%
+  \setCJKmainfont{FandolSong}[Extension = .otf, UprightFont = *-Regular, BoldFont = *-Bold]%
+  \setCJKsansfont{FandolHei}[Extension = .otf, UprightFont = *-Regular, BoldFont = *-Bold]%
+  \setCJKmonofont{FandolFang}[Extension = .otf, UprightFont = *-Regular]%
+  \setCJKfamilyfont{zhsong}{FandolSong}[Extension = .otf, UprightFont = *-Regular, BoldFont = *-Bold]%
+  \setCJKfamilyfont{zhhei}{FandolHei}[Extension = .otf, UprightFont = *-Regular, BoldFont = *-Bold]%
+  \setCJKfamilyfont{zhfs}{FandolFang}[Extension = .otf, UprightFont = *-Regular]%
+  \setCJKfamilyfont{zhkai}{FandolKai}[Extension = .otf, UprightFont = *-Regular]%
+}
+% auto：先认 macOS 系统字体，再认 Windows 中易字体，都没有则用 Fandol
+\newcommand{\app@font@auto}{%
+  \IfFontExistsTF{Songti SC}{\app@font@mac}{%
+    \IfFontExistsTF{SimSun}{\app@font@windows}{\app@font@fandol}%
+  }%
+}
+% 清掉 ctex 预设的 Script=CJK 字体特征：macOS 的 Songti SC / Heiti SC
+% 不声明该 Script，否则 fontspec 会给出无害但碍眼的警告（同论文模板做法）
+\defaultCJKfontfeatures{}
+\@nameuse{app@font@\appfontset}
+\makeatother
+% 字体族命令：\songti 宋体、\heiti 黑体、\fangsong 仿宋、\kaishu 楷体
+% （与论文模板一致；ctex 若已定义同名命令则沿用其定义）
+\providecommand{\songti}{\CJKfamily{zhsong}}
+\providecommand{\heiti}{\CJKfamily{zhhei}}
+\providecommand{\fangsong}{\CJKfamily{zhfs}}
+\providecommand{\kaishu}{\CJKfamily{zhkai}}
+
+%---------- 章节标题版式 ----------
+\ctexset{
+  section    = {format = \zihao{4}\heiti, beforeskip = 14pt, afterskip = 8pt},
+  subsection = {format = \zihao{-4}\heiti, beforeskip = 10pt, afterskip = 5pt},
+}
+
+%---------- 页眉页脚（原件页脚为「PAGE / NUMPAGES」）----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyfoot[C]{\zihao{5}\thepage\ /\ \pageref{LastPage}}
+
+%---------- 写作辅助宏 ----------
+\newif\ifshowhints
+\showhintstrue                                   % 定稿时改为 \showhintsfalse
+\newcommand{\hint}[1]{\ifshowhints{\color{gray!75}\zihao{5}#1}\else\relax\fi}
+% \blank{内容} 为填写框，可选参数指定下划线宽度（默认 1.15cm）：
+%   \blank{}、\blank{张三}、\blank[3cm]{}、\sblank{}（更短的 0.8cm）
+\newcommand{\blank}[2][1.15cm]{\underline{\makebox[#1][c]{#2}}}
+\newcommand{\sblank}[1][]{\blank[0.8cm]{#1}}
+\newcommand{\writingspace}[1]{\par\vspace{#1}\par}   % 大段文字留白（可断，便于长框跨页）
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\arrayrulewidth}{0.4pt}    % 统一框线粗细
+
+% 意见栏：#1=高度 #2=提示语 #3=签章人
+\newcommand{\opinionbox}[3]{%
+  \par\noindent
+  \begingroup
+  \setlength{\fboxsep}{8pt}%
+  \setlength{\fboxrule}{0.4pt}%      % 与表格线同粗
+  \fbox{\parbox[t][#1][t]{\dimexpr\appframewidth-2\fboxsep-2\fboxrule\relax}{%
+    \hint{#2}\par\vspace*{\fill}\par
+    \raggedleft #3（签章）：\quad 年\quad 月\quad 日\quad~
+  }}%
+  \endgroup\par\smallskip
+}
+
+\begin{document}
+
+%=====================================================================
+% 封面
+%=====================================================================
+\thispagestyle{empty}
+\begin{center}
+  {\zihao{2}\heiti 大学生创新训练项目计划申请书}\par
+\end{center}
+\vspace{2.2cm}
+
+% 原封面表：7 行 4 列，第 2 列在部分行跨 3 列合并
+\noindent\begin{tblr}{
+  width = \appframewidth,
+  colspec = {Q[c,m,2.9cm] X[l,m] Q[c,m,2.9cm] X[l,m]},
+  hlines, vlines,
+  rows = {ht = 1.25cm},
+}
+项目名称   & \SetCell[c=3]{} \blank[5cm]{} & & \\
+项目负责人 & \blank[3cm]{} & 联系电话 & \blank[3cm]{} \\
+所在学院   & \SetCell[c=3]{} \blank[5cm]{} & & \\
+学号       & \blank[3cm]{} & 专业班级 & \blank[3cm]{} \\
+指导教师   & \SetCell[c=3]{} \blank[5cm]{} & & \\
+申请日期   & \SetCell[c=3]{} \blank[5cm]{} & & \\
+起止年月   & \SetCell[c=3]{} \blank[5cm]{} & & \\
+\end{tblr}
+
+\vfill
+\begin{center}
+  {\zihao{3}\heiti 长沙理工大学}\par
+  \vspace{0.8cm}
+  % \sblank{} 年 \sblank{} 月 \sblank{} 日
+\end{center}
+\vspace{1.5cm}
+\newpage
+
+%=====================================================================
+% 填写说明
+%=====================================================================
+\begin{center}
+  {\zihao{3}\heiti 填写说明}
+\end{center}
+\vspace{0.6cm}
+
+\begin{enumerate}[label=\arabic*., leftmargin=2.5em, itemsep=0.9em, parsep=0pt]
+  \item 本申请书所列各项内容均须实事求是，认真填写，表达明确严谨，简明扼要。
+  \item 申请人可以是个人，也可为创新团队，首页只填负责人。“项目编号”一栏不填。
+  \item 本申请书为大16开本（A4），左侧装订成册。可网上下载、自行复印或加页，
+        但格式、内容、大小均须与原件一致。
+  \item 负责人所在学院认真审核，经初评和答辩，签署意见后，将申请书（一式一份）
+        报送长沙理工大学教务处。
+\end{enumerate}
+\newpage
+
+%=====================================================================
+\section*{一、基本情况}
+%=====================================================================
+% 原表：15 行 × 8 列网格，含横向 / 纵向合并单元格。
+% \SetCell[c=n]{} 横向合并 n 列；\SetCell[r=n]{} 纵向合并 n 行。
+% 本表列数多，统一用五号字并收紧列间距，避免标签折行。
+\begingroup\zihao{5}
+\noindent\begin{tblr}{
+  width = \dimexpr\appframewidth-15pt\relax,   % 8 列表格：补偿 tabularray 列间距开销
+  colspec = {Q[c,m,2.6cm] X[1,c,m] X[1.25,c,m] X[1,c,m]
+             X[0.9,c,m] X[1,c,m] X[1.25,c,m] X[1,c,m]},
+  hlines, vlines,
+  colsep = 3pt,
+  rows = {ht = 0.95cm},
+  row{9-12} = {ht = 2.3cm},
+  row{13-15} = {ht = 0.9cm},
+}
+项目名称 & \SetCell[c=7]{} \blank[6cm]{} & & & & & & \\
+项目级别 & \SetCell[c=7]{} \blank[6cm]{} & & & & & & \\
+项目类型 & \SetCell[c=7]{} \blank[6cm]{} & & & & & & \\
+所属学科 & \SetCell[c=7]{l} 一级学科：\blank[3cm]{}\qquad 二级学科：\blank[3cm]{} & & & & & & \\
+申请金额 & \SetCell[c=2]{} \sblank{} 元 & & \SetCell[c=2]{} 起止年月 & & \SetCell[c=3]{} \blank[4.4cm]{年\ 月至\ 年\ 月} & & \\
+负责人   & \blank{} & 性别 & \blank{} & 民族 & \blank{} & 出生年月 & \blank{} \\
+学号     & \blank{} & 联系电话 & \SetCell[c=5]{} \blank[5cm]{} & & & & \\
+指导教师 & \blank{} & 联系电话 & \SetCell[c=5]{} \blank[5cm]{} & & & & \\
+\SetCell[c=2]{} 项目简介 & & \SetCell[c=6]{h} \hint{（在此填写项目简介，一般 200--300 字）} & & & & & \\
+\SetCell[c=2]{} 负责人曾经参与科研的情况 & & \SetCell[c=6]{h} \hint{（在此填写）} & & & & & \\
+\SetCell[c=2]{} 指导教师承担科研课题情况 & & \SetCell[c=6]{h} \hint{（在此填写）} & & & & & \\
+\SetCell[c=2]{} 指导教师对本项目的支持情况 & & \SetCell[c=6]{h} \hint{（在此填写）} & & & & & \\
+\SetCell[r=3]{} 项目组主要成员 & 姓名 & 学号 & 专业班级 & 所在学院 & \SetCell[c=3]{} 项目中的分工 & & \\
+& \blank{} & \blank{} & \blank{} & \blank{} & \SetCell[c=3]{} \blank[4cm]{} & & \\
+& \blank{} & \blank{} & \blank{} & \blank{} & \SetCell[c=3]{} \blank[4cm]{} & & \\
+\end{tblr}
+\endgroup
+\newpage
+
+%=====================================================================
+\section*{二、立项依据（可加页）}
+%=====================================================================
+% 与原件一致：整节内容装在一个长框内，框内九个栏目名及顺序照抄原件。
+% 长框自动跨页（对应「可加页」），分页处左右框线连续。
+\begin{jibox}
+\hint{以下栏目对应原件长框内的提纲，请直接在各标题下撰写正文；留白高度可自行调整。}\par
+
+\appitem{（一）研究目的}
+\hint{（在此填写研究目的）}\writingspace{2.6cm}
+
+\appitem{（二）研究内容}
+\hint{（在此填写研究内容）}\writingspace{3.2cm}
+
+\appitem{（三）国、内外研究现状和发展动态}
+% 文献条目写在 refs.bib，用 \cite{key} 引用，编号由 GB/T 7714 样式自动生成。
+% 定稿时把 \cite 移进自己的正文；若正文暂不引用，可用 \nocite{key} 仅列入文献表。
+\hint{（在此填写国内外研究现状和发展动态）\par
+示例：对抗样本的生成机理\cite{goodfellow2015adversarial}与神经网络的脆弱性\cite{szegedy2014intriguing}。}\writingspace{3.2cm}
+
+
+\bibliography{refs}
+\newpage
+
+
+\appitem{（四）创新点与项目特色}
+\hint{（在此填写创新点与项目特色）}\writingspace{2.6cm}
+
+\appitem{（五）技术路线、拟解决的问题及预期成果}
+\hint{（在此填写技术路线、拟解决的问题及预期成果）}\writingspace{3.2cm}
+
+\appitem{（六）项目研究进度安排}
+\hint{（在此填写项目研究进度安排）}\writingspace{2.6cm}
+
+\appitem{（七）已有基础}
+\textbf{1. 与本项目有关的研究积累和已取得的成绩}\par
+\hint{（在此填写）}\writingspace{1.8cm}
+\textbf{2. 已具备的条件，尚缺少的条件及解决方法}\par
+\hint{（在此填写）}\writingspace{1.8cm}
+\end{jibox}
+
+%---------- 参考文献表 ----------
+% 原件无此节，此处紧随「立项依据」输出，正符合「（可加页）」的要求。
+% 标题由 \bibliography 自动生成（「参考文献」），样式与其余章节一致。
+% 如需移到别处，把下一行整行剪过去；完全不需要则注释掉。
+
+
+%=====================================================================
+\section*{三、经费预算}
+%=====================================================================
+% 原表：12 行 × 5 列，表头前 3 列纵向合并 2 行，第 4/5 列横向合并表头。
+\noindent\begin{tblr}{
+  width = \dimexpr\appframewidth-42pt\relax,  % 5 列含两个 Q 定宽列：实测补偿值
+  colspec = {Q[l,m,4.3cm] X[1,c,m] X[l,m,3.6cm] X[1,c,m] X[1,c,m]},
+  hlines, vlines,
+  rows = {ht = 0.95cm},
+  row{1-2} = {ht = 0.8cm},
+}
+\SetCell[r=2]{} 开支科目 & \SetCell[r=2]{} 预算经费（元） & \SetCell[r=2]{} 主要用途 & \SetCell[c=2]{} 阶段下达经费计划（元） & \\
+& & & 前半阶段 & 后半阶段 \\
+预算经费总额            & \blank{} & \blank{} & \blank{} & \blank{} \\
+1. 业务费               & \blank{} & \blank{} & \blank{} & \blank{} \\
+（1）计算、分析、测试费 & \blank{} & \blank{} & \blank{} & \blank{} \\
+（2）能源动力费         & \blank{} & \blank{} & \blank{} & \blank{} \\
+（3）会议、差旅费       & \blank{} & \blank{} & \blank{} & \blank{} \\
+（4）文献检索费         & \blank{} & \blank{} & \blank{} & \blank{} \\
+（5）论文出版费         & \blank{} & \blank{} & \blank{} & \blank{} \\
+2. 仪器设备购置费       & \blank{} & \blank{} & \blank{} & \blank{} \\
+3. 实验装置试制费       & \blank{} & \blank{} & \blank{} & \blank{} \\
+4. 材料费               & \blank{} & \blank{} & \blank{} & \blank{} \\
+\end{tblr}
+\newpage
+
+%=====================================================================
+% 四~八 意见栏（原件均为整页宽的填写框 + 右下角签章行）
+%=====================================================================
+\section*{四、指导教师意见}
+\opinionbox{3.4cm}{（在此填写指导教师意见）}{导师}
+
+\vspace{0.4cm}
+% 原件此标题为「院系实验室意见」，缺「五、」编号，此处按章节顺序补齐。
+\section*{五、院系实验室意见}
+\opinionbox{3.6cm}{（在此填写是否向参加“大创计划”项目的学生开放等）}{负责人}
+
+\newpage
+\section*{六、院系大学生创新创业训练计划专家组意见}
+\opinionbox{4.2cm}{（在此填写院系专家组意见）}{专家组组长}
+
+\vspace{0.4cm}
+\section*{七、学校大学生创新创业训练计划专家组意见}
+\opinionbox{4.2cm}{（在此填写学校专家组意见）}{负责人}
+
+\newpage
+\section*{八、大学生创新创业训练计划领导小组审批意见}
+% 注：原件此处签章人为「导师（签章）」，疑为模板复制遗留；
+%     如需改为「负责人（签章）」，把下面最后一个参数「导师」改成「负责人」即可。
+\opinionbox{5.0cm}{（在此填写领导小组审批意见）}{导师}
+
+\end{document}
