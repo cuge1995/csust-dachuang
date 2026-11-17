@@ -45,3 +45,5 @@ latexmk -xelatex dachuang_application.tex
 
 - `refs.bib` 中前两条是对抗样本主题的示例文献，后三条为格式示例（默认不输出），**提交前请替换为实际文献**。
 - 「二、立项依据」使用可跨页长框还原原件，分页处左右框线连续，与 Word 表格跨页效果一致。
+
+## 长理AI Lab出品
